@@ -65,7 +65,7 @@ yarn-error.log*
 # ------------------------------------------
 # Cloudflare Workers environment variables
 .env
-.env.*
+.env.local
 wrangler.toml.local # Local overrides for wrangler.toml
 wrangler.toml.development # Specific development environment files
 wrangler.toml.staging
