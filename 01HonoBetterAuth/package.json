@@ -1,7 +1,8 @@
 {
-  "name": "01HonoBetterAuth",
+  "name": "01honobetterauth",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "db:up": "docker compose up -d"
   },
   "dependencies": {
     "hono": "^4.9.6"
