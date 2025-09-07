@@ -1,43 +1,59 @@
 /* eslint-disable node/no-process-env */
-import { config } from "dotenv";
-import { expand } from "dotenv-expand";
-import path from "node:path";
 import { z } from "zod";
 
-expand(config({
-  path: path.resolve(
-    process.cwd(),
-    process.env.NODE_ENV === "test" ? ".env.test" : ".env",
-  ),
-}));
 
-const EnvSchema = z.object({
-  NODE_ENV: z.string().default("development"),
-  PORT: z.coerce.number().default(9999),
-  LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]),
-  CF_DB_NAME: z.string(),
-  CF_D1_DB_ID: z.string(),
-  CF_ACCOUNT_ID: z.string(),
-  CF_TOKEN_ID: z.string(),
-}).superRefine((input, ctx) => {
-  if (input.NODE_ENV === "production" && !input.CF_TOKEN_ID) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.invalid_type,
-      expected: "string",
-      received: "undefined",
-      path: ["CF_TOKEN_ID"],
-      message: "CF_TOKEN_ID is required in production",
-    });
-  }
-});
+const EnvSchema = z
+  .object({
+    NODE_ENV: z.string().default("development"),
+    PORT: z.coerce.number().default(9999),
+    LOG_LEVEL: z.enum([
+      "fatal",
+      "error",
+      "warn",
+      "info",
+      "debug",
+      "trace",
+      "silent",
+    ]),
+    CF_DB_NAME: z.string(),
+    CF_D1_DB_ID: z.string(),
+    CF_ACCOUNT_ID: z.string(),
+    CF_TOKEN_ID: z.string(),
+  })
+  .superRefine((input, ctx) => {
+    if (input.NODE_ENV === "production") {
+      if (!input.CF_ACCOUNT_ID) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.invalid_type,
+          expected: "string",
+          received: "undefined",
+          path: ["CF_ACCOUNT_ID"],
+          message: "CF_ACCOUNT_ID is required in production",
+        });
+      }
+      if (!input.CF_TOKEN_ID) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.invalid_type,
+          expected: "string",
+          received: "undefined",
+          path: ["CF_TOKEN_ID"],
+          message: "CF_TOKEN_ID is required in production",
+        });
+      }
+    }
+  });
 
 export type Environment = z.infer<typeof EnvSchema>;
 
-export function parseEnv(data: any) {
+export function parseEnv(data: any): Environment {
   const { data: env, error } = EnvSchema.safeParse(data);
 
   if (error) {
-    const errorMessage = `❌ Invalid env - ${Object.entries(error.flatten().fieldErrors).map(([key, errors]) => `${key}: ${errors.join(",")}`).join(" | ")}`;
+    const errorMessage = `❌ Invalid env - ${Object.entries(
+      error.flatten().fieldErrors
+    )
+      .map(([key, errors]) => `${key}: ${errors.join(",")}`)
+      .join(" | ")}`;
     throw new Error(errorMessage);
   }
 
