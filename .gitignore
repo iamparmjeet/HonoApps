@@ -10,7 +10,6 @@ node_modules/
 # IDE and Editor ignores
 # --------------------
 # VS Code
-.vscode/
 .vscode-test/
 
 # IntelliJ IDEA
