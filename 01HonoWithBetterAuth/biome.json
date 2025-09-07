@@ -1,102 +1,57 @@
 {
-	"organizeImports": {
-		"enabled": true
+	"$schema": "https://biomejs.dev/schemas/2.2.3/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"includes": [
+			"**/*.js",
+			"**/*.jsx",
+			"**/*.ts",
+			"**/*.tsx",
+			"**/*.json"
+		]
 	},
 	"formatter": {
 		"enabled": true,
-		"formatWithErrors": false,
-		"indentStyle": "tab",
+		"indentStyle": "space",
 		"indentWidth": 2,
-		"lineEnding": "lf",
 		"lineWidth": 80,
-		"attributePosition": "auto"
-	},
-	"files": {
-		"ignore": [
-			"**/node_modules/**",
-			"**/dist/**",
-			"**/build/**",
-			"**/.wrangler/**",
-			"**/.turbo/**",
-			"**/migrations/**",
-			"**/coverage/**"
-		]
+		"lineEnding": "lf"
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": false,
-			"complexity": {
-				"noForEach": "error",
-				"noStaticOnlyClass": "error",
-				"noUselessSwitchCase": "error",
-				"useFlatMap": "error"
-			},
-			"correctness": {
-				"noUnusedImports": "warn",
-				"noUnusedVariables": "warn",
-				"noDuplicateCase": "error",
-				"noFallthroughSwitchClause": "error",
-				"noConstantCondition": "warn",
-				"noUselessConstructor": "warn"
+			"recommended": true,
+			"suspicious": {
+				"noExplicitAny": "error"
 			},
 			"style": {
-				"noNegationElse": "off",
-				"useForOf": "error",
-				"noConsole": "warn",
-				"useNodejsImportProtocol": "error",
-				"useNumberNamespace": "error",
-				"useImportType": "warn",
-				"useConsistentTypeImports": "warn",
-				"noParameterAssign": "warn"
+				"noNonNullAssertion": "warn",
+				"useConst": "error"
 			},
-			"suspicious": {
-				"noDoubleEquals": "error",
-				"noThenProperty": "error",
-				"useIsArray": "error",
-				"noMisleadingCharacterClass": "warn"
+			"performance": {
+				"noDelete": "error"
 			}
 		}
 	},
 	"javascript": {
 		"formatter": {
+			"quoteStyle": "double",
 			"jsxQuoteStyle": "double",
-			"quoteProperties": "asNeeded",
-			"trailingCommas": "all",
-			"semicolons": "asNeeded",
+			"trailingCommas": "es5",
+			"semicolons": "always",
 			"arrowParentheses": "always",
-			"bracketSpacing": true,
-			"bracketSameLine": false,
-			"quoteStyle": "single",
-			"attributePosition": "auto"
+			"quoteProperties": "asNeeded"
 		}
 	},
-	"overrides": [
-		{
-			"include": [
-				"**/*.ts",
-				"**/*.tsx"
-			],
-			"linter": {
-				"rules": {
-					"suspicious": {
-						"noDoubleEquals": "off"
-					}
-				}
-			}
-		},
-		{
-			"include": [
-				"*.json",
-				"**/*.json"
-			],
-			"linter": {
-				"rules": {
-					"suspicious": {
-						"noDoubleEquals": "off"
-					}
-				}
-			}
+	"json": {
+		"formatter": {
+			"indentStyle": "space",
+			"indentWidth": 2
 		}
-	]
+	}
 }
