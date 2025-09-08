@@ -1,12 +1,12 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { createDB } from "@/db";
-import { Environment } from "@/env";
+import type { Environment } from "@/env";
 
-export function createAuth(env:Environment) {
-    return betterAuth({
+export function createAuth(env: Environment) {
+  return betterAuth({
     database: drizzleAdapter(createDB, {
-      provider: "sqlite", 
+      provider: "sqlite",
     }),
     emailAndPassword: {
       enabled: true,
@@ -14,14 +14,16 @@ export function createAuth(env:Environment) {
     socialProviders: {
       google: {
         clientId: env.GOOGLE_CLIENT_ID,
-        clientSecret: env.GOOGLE_CLIENT_SECRET
+        clientSecret: env.GOOGLE_CLIENT_SECRET,
       },
       github: {
         clientId: env.GITHUB_CLIENT_ID,
-        clientSecret: env.GITHUB_CLIENT_SECRET
-      }
+        clientSecret: env.GITHUB_CLIENT_SECRET,
+      },
     },
     baseURL: env.BETTER_AUTH_URL,
     secret: env.BETTER_AUTH_SECRET,
   });
 }
+
+export type Auth = ReturnType<typeof createAuth>;
