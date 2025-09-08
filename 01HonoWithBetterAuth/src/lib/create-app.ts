@@ -21,7 +21,7 @@ export default function createApp() {
     c.env = parseEnv(Object.assign(c.env || {}, process.env));
     return next();
   });
-  app.use(serveEmojiFavicon("🔥"));
+  app.use(serveEmojiFavicon("📝"));
   app.use(pinoLogger());
 
   app.notFound(notFound);
