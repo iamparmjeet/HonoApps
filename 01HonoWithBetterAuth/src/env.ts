@@ -14,12 +14,19 @@ const EnvSchema = z
       "trace",
       "silent",
     ]),
+    LOCAL_APP: z.string(),
+    PROD_APP: z.string(),
     CF_DB_NAME: z.string(),
     CF_D1_DB_ID: z.string(),
     CF_ACCOUNT_ID: z.string(),
     CF_TOKEN_ID: z.string(),
     BETTER_AUTH_SECRET: z.string(),
     BETTER_AUTH_URL: z.string(),
+    // Socials Providers
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
+    GITHUB_CLIENT_ID: z.string(),
+    GITHUB_CLIENT_SECRET: z.string(),
   })
   .superRefine((input, ctx) => {
     if (input.NODE_ENV === "production") {
