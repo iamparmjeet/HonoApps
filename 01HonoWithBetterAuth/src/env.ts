@@ -1,7 +1,6 @@
 /* eslint-disable node/no-process-env */
 import { z } from "zod";
 
-
 const EnvSchema = z
   .object({
     NODE_ENV: z.string().default("development"),
@@ -19,6 +18,8 @@ const EnvSchema = z
     CF_D1_DB_ID: z.string(),
     CF_ACCOUNT_ID: z.string(),
     CF_TOKEN_ID: z.string(),
+    BETTER_AUTH_SECRET: z.string(),
+    BETTER_AUTH_URL: z.string(),
   })
   .superRefine((input, ctx) => {
     if (input.NODE_ENV === "production") {
@@ -45,7 +46,7 @@ const EnvSchema = z
 
 export type Environment = z.infer<typeof EnvSchema>;
 
-export function parseEnv(data: any): Environment {
+export function parseEnv(data: Environment): Environment {
   const { data: env, error } = EnvSchema.safeParse(data);
 
   if (error) {
