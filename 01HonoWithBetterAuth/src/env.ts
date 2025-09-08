@@ -1,4 +1,3 @@
-/* eslint-disable node/no-process-env */
 import { z } from "zod";
 
 const EnvSchema = z
