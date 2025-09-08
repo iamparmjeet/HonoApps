@@ -1,6 +1,9 @@
 import { defineConfig } from "drizzle-kit";
+import { parseEnv } from "./src/env";
 
-import env from "@/env-runtime";
+// import env from "@/env-runtime";
+
+const env = parseEnv(process.env as any);
 
 export default defineConfig({
   schema: "./src/db/schema.ts",
@@ -10,6 +13,6 @@ export default defineConfig({
   dbCredentials: {
     accountId: env.CF_ACCOUNT_ID,
     databaseId: env.CF_D1_DB_ID,
-    token: env.CF_TOKEN_ID
+    token: env.CF_TOKEN_ID,
   },
 });
