@@ -10,9 +10,9 @@
     "lint:fix": "biome format --write .",
     "test": "cross-env NODE_ENV=test vitest",
     "typecheck": "tsc --noEmit",
-    "dev:db": "turso dev --db-file dev.db",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate:local": "wrangler d1 migrations apply honowithbetterauth --local",
+    "db:migrate:prod": "wrangler d1 migrations apply honowithbetterauth",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
@@ -21,8 +21,6 @@
     "@hono/zod-openapi": "^1.1.0",
     "@libsql/client": "^0.15.14",
     "@scalar/hono-api-reference": "^0.9.16",
-    "dotenv": "^17.2.2",
-    "dotenv-expand": "^12.0.3",
     "drizzle-orm": "^0.44.5",
     "drizzle-zod": "^0.8.3",
     "hono": "^4.9.6",
