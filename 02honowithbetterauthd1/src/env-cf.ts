@@ -18,6 +18,11 @@ const EnvSchema = z
     DB_NAME: z.string(),
     DB_USER: z.string(),
     DB_PASSWORD: z.string(),
+    CF_AC_ID: z.string(),
+    CF_DB_NAME: z.string(),
+    CF_DB_ID: z.string(),
+    CF_TOKEN: z.string(),
+    DB_FILE_LOCAL: z.string(),
     BETTER_AUTH_SECRET: z.string(),
     BETTER_AUTH_URL: z.string(),
     // Socials Providers
