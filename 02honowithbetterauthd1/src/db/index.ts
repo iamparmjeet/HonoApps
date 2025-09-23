@@ -1,14 +1,14 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import { DB_URL } from "@/constants/db-const";
+import { drizzle } from "drizzle-orm/d1";
 import * as schema from "@/db/schema";
-
 // import type { Environment } from "@/env";
 
-const pool = new Pool({
-  connectionString: DB_URL,
-});
-
-export const db = drizzle(pool, { schema, casing: "snake_case" });
-
-export type Database = typeof db;
+// export interface ExtendedEnv extends Environment {
+//   CF_DB: D1Database;
+// }
+export function createDB(env: { CF_DB: D1Database }) {
+  return drizzle(env.CF_DB, {
+    casing: "snake_case",
+    schema,
+  });
+}
+export type Database = ReturnType<typeof createDB>;
