@@ -1,4 +1,5 @@
-import { boolean, pgTable, real, text, timestamp } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import {
   INVITE_STATUS_VALUES,
   LEASE_STATUS_VALUES,
@@ -11,7 +12,7 @@ import {
 import { generateUUID } from "@/utils";
 import { user } from "./auth";
 
-export const properties = pgTable("properties", {
+export const properties = sqliteTable("properties", {
   id: text("id").primaryKey().notNull().$defaultFn(generateUUID),
   ownerId: text("owner_id")
     .notNull()
@@ -19,14 +20,16 @@ export const properties = pgTable("properties", {
   name: text("name").notNull(),
   address: text("address").notNull(),
   type: text("type", { enum: PROPERTY_TYPES_VALUES }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
     .$onUpdate(() => new Date()),
 });
 
-export const units = pgTable("units", {
+export const units = sqliteTable("units", {
   id: text("id").primaryKey().$defaultFn(generateUUID),
   propertyId: text("property_id")
     .notNull()
@@ -37,14 +40,16 @@ export const units = pgTable("units", {
   baseRent: real("base_rent").notNull(),
   description: text("description"),
   status: text("status", { enum: UNIT_STATUS_VALUES }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
     .$onUpdate(() => new Date()),
 });
 
-export const leases = pgTable("leases", {
+export const leases = sqliteTable("leases", {
   id: text("id").primaryKey().$defaultFn(generateUUID),
   unitId: text("unit_id")
     .notNull()
@@ -52,22 +57,24 @@ export const leases = pgTable("leases", {
   tenantId: text("tenant_id")
     .notNull()
     .references(() => user.id),
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date"),
+  startDate: integer("start_date", { mode: "timestamp" }).notNull(),
+  endDate: integer("end_date", { mode: "timestamp" }),
   rent: real("rent").notNull(),
   deposit: real("deposit"),
   status: text("status", {
     enum: LEASE_STATUS_VALUES,
   }).notNull(),
   referenceId: text("reference_id").references(() => user.id),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
     .$onUpdate(() => new Date()),
 });
 
-export const utilities = pgTable("utilities", {
+export const utilities = sqliteTable("utilities", {
   id: text("id").primaryKey().$defaultFn(generateUUID),
   leaseId: text("lease_id")
     .notNull()
@@ -75,67 +82,75 @@ export const utilities = pgTable("utilities", {
   utilityType: text("utility_type", {
     enum: UTILITY_TYPE_VALUES,
   }).notNull(),
-  readingDate: timestamp("reading_date").notNull(),
+  readingDate: integer("reading_date", { mode: "timestamp" }).notNull(),
   ratePerUnit: real("rate_per_unit"),
   unitsUsed: real("units_used"),
   previousReading: real("previous_reading"),
   currentReading: real("current_reading"),
   fixedCharge: real("fixed_charge"),
   totalAmount: real("total_amount").notNull(),
-  isPaid: boolean("is_paid").notNull().default(false),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
+  isPaid: integer("is_paid", { mode: "boolean" }).notNull().default(false),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
     .$onUpdate(() => new Date()),
 });
 
-export const payments = pgTable("payments", {
+export const payments = sqliteTable("payments", {
   id: text("id").primaryKey().$defaultFn(generateUUID),
   leaseId: text("lease_id")
     .notNull()
     .references(() => leases.id),
   amount: real("amount").notNull(),
-  paymentDate: timestamp("payment_date").notNull(),
+  paymentDate: integer("payment_date", { mode: "timestamp" }).notNull(),
   type: text("type", {
     enum: PAYMENT_TYPE_VALUES,
   }).notNull(),
   description: text("description"),
   utilityId: text("utility_id").references(() => utilities.id),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
     .$onUpdate(() => new Date()),
 });
 
-export const referrers = pgTable("referrers", {
+export const referrers = sqliteTable("referrers", {
   id: text("id").primaryKey().$defaultFn(generateUUID),
   referredUserId: text("referred_user_id")
     .notNull()
     .references(() => user.id),
   note: text("note"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
     .$onUpdate(() => new Date()),
 });
 
-export const tenantInvites = pgTable("tenant_invites", {
+export const tenantInvites = sqliteTable("tenant_invites", {
   id: text("id").primaryKey().$defaultFn(generateUUID),
   email: text("email").notNull(), // to invite
   token: text("token").unique().notNull(), // secret to validate user
-  expiresAt: timestamp("expires_at"),
+  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
   invitedById: text("invited_by")
     .notNull()
     .references(() => user.id),
   status: text("status", {
     enum: INVITE_STATUS_VALUES,
   }).default("pending"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
     .$onUpdate(() => new Date()),
 });
