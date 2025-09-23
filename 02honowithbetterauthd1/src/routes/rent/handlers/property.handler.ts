@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import type { Context } from "hono";
-import { db } from "@/db";
+import { createDB } from "@/db";
 import { properties } from "@/db/schema";
 import { CreatePropertySchema, UpdatePropertySchema } from "@/types/rent-types";
 import { badRequest, notFound, success } from "@/utils";
@@ -8,9 +8,11 @@ import { badRequest, notFound, success } from "@/utils";
 // Helpers Function
 
 export const isOwner = async (
+  c: Context,
   userId: string,
   propertyId: string
 ): Promise<boolean> => {
+  const { db } = createDB(c.env);
   const found = await db.query.properties.findFirst({
     where: (prop, { eq, and }) =>
       and(eq(prop.id, propertyId), eq(prop.ownerId, userId)),
@@ -21,6 +23,7 @@ export const isOwner = async (
 // 1) Create Property
 
 export const create = async (c: Context) => {
+  const { db } = createDB(c.env);
   const user = c.get("user");
   const result = CreatePropertySchema.safeParse(await c.req.json());
   if (!result.success) {
@@ -51,6 +54,7 @@ export const create = async (c: Context) => {
 // Get All
 
 export const getAll = async (c: Context) => {
+  const { db } = createDB(c.env);
   const user = c.get("user");
 
   try {
@@ -69,6 +73,7 @@ export const getAll = async (c: Context) => {
 //
 
 export const getById = async (c: Context) => {
+  const { db } = createDB(c.env);
   const propertyId = c.req.param("id");
 
   const property = await db.query.properties.findFirst({
@@ -83,6 +88,7 @@ export const getById = async (c: Context) => {
 // 4) Update Property
 
 export const update = async (c: Context) => {
+  const { db } = createDB(c.env);
   const propertyId = c.req.param("id");
   const result = UpdatePropertySchema.safeParse(await c.req.json());
 
@@ -111,6 +117,7 @@ export const update = async (c: Context) => {
 // 5) Delete Property
 
 export const remove = async (c: Context) => {
+  const { db } = createDB(c.env);
   const propertyId = c.req.param("id");
 
   try {
