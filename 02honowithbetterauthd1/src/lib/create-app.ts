@@ -1,10 +1,9 @@
 import { type Context, Hono } from "hono";
-import {db} from "@/db";
 import { parseEnv } from "@/env";
 import { notFound, onError, pinoLogger } from "@/middleware";
 import type { AppBindings } from "@/types/types";
 import { serveEmojiFavicon } from "@/utils";
-import { auth } from "./auth";
+import { createAuth } from "./auth";
 
 export function createRouter() {
   return new Hono<AppBindings>({
@@ -14,9 +13,10 @@ export function createRouter() {
 
 export default function createApp() {
   const app = createRouter();
-  app.use((c, next) => {
-    // biome-ignore lint/style/noProcessEnv: "Only Here"
-    c.env = parseEnv(Object.assign(c.env || {}, process.env));
+  app.use((c: Context, next) => {
+    const env = parseEnv(c.env);
+    // c.env = parseEnv(Object.assign(c.env || {}, process.env));
+    c.env = { ...c.env, ...env };
     return next();
   });
 
@@ -24,7 +24,7 @@ export default function createApp() {
   app.use(serveEmojiFavicon("⛳"));
 
   app.on(["POST", "GET"], "/api/auth/*", (c: Context) => {
-    // const auth = createAuth();
+    const auth = createAuth(c);
     return auth.handler(c.req.raw);
   });
 
